@@ -1,0 +1,44 @@
+:root {
+  --font-display: 'Sora', 'Avenir Next', sans-serif;
+  --font-sans: 'Manrope', 'Avenir Next', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, monospace;
+
+  --text: #e7eef5;
+  --muted: #8ea6b8;
+  --accent: #3dd6c6;
+  --line: rgba(140, 170, 190, 0.18);
+  --line-strong: rgba(140, 170, 190, 0.35);
+  --panel: rgba(10, 22, 34, 0.88);
+  --panel-soft: rgba(14, 28, 42, 0.9);
+  --stage: #0b1520;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: #071018;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+code {
+  font-family: var(--font-mono);
+}

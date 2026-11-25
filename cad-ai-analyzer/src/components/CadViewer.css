@@ -1,0 +1,169 @@
+.cad-viewer {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  background: var(--stage);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.cad-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--stage) 80%, #000);
+}
+
+.cad-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.badge {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  padding: 4px 8px;
+  color: #061018;
+  background: var(--accent);
+}
+
+.toolbar-label {
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.coord-readout {
+  display: flex;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  min-width: 160px;
+  justify-content: flex-end;
+}
+
+.coord-empty {
+  color: var(--muted);
+}
+
+.cad-stage {
+  flex: 1;
+  min-height: 320px;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(61, 214, 198, 0.08), transparent 45%),
+    radial-gradient(ellipse at 90% 100%, rgba(90, 167, 255, 0.1), transparent 40%),
+    linear-gradient(180deg, #0b1520 0%, #071018 100%);
+}
+
+.cad-svg {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  cursor: crosshair;
+}
+
+.axis-label {
+  fill: rgba(160, 185, 205, 0.35);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+
+.pipe-shadow {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pipe-line {
+  fill: none;
+  stroke: url(#pipeGlow);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 8px rgba(61, 214, 198, 0.35));
+}
+
+.seg-hot {
+  stroke: transparent;
+  stroke-width: 18;
+  cursor: pointer;
+}
+
+.seg-label {
+  cursor: pointer;
+}
+
+.seg-label rect {
+  fill: rgba(7, 16, 24, 0.85);
+  stroke: rgba(140, 170, 190, 0.35);
+  stroke-width: 1;
+  transition: stroke 0.2s ease, fill 0.2s ease;
+}
+
+.seg-label text {
+  fill: #d7e6f2;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.seg-hit.active .seg-label rect,
+.seg-hit:hover .seg-label rect {
+  stroke: var(--accent);
+  fill: color-mix(in srgb, var(--accent) 18%, #071018);
+}
+
+.node {
+  cursor: pointer;
+}
+
+.node circle {
+  fill: #0b1520;
+  stroke: #e8f4ff;
+  stroke-width: 2;
+  transition: r 0.15s ease, stroke 0.15s ease;
+}
+
+.node.hot circle {
+  stroke: var(--accent);
+  fill: color-mix(in srgb, var(--accent) 35%, #0b1520);
+}
+
+.node text {
+  fill: #c9dcec;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.node .node-coord {
+  fill: rgba(160, 185, 205, 0.75);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 400;
+}
+
+@media (max-width: 720px) {
+  .toolbar-label {
+    display: none;
+  }
+
+  .cad-svg {
+    min-height: 280px;
+  }
+}
