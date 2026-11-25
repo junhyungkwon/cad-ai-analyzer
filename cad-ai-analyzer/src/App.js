@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import UploadPanel from './components/UploadPanel';
 import CadViewer from './components/CadViewer';
 import DataPanel from './components/DataPanel';
+import { analyzeWithAi } from './api/analyze';
 import {
   DEMO_POLYLINE,
   DEMO_EXCEL_ROWS,
@@ -19,34 +20,39 @@ function App() {
   const [selectedSegmentId, setSelectedSegmentId] = useState('S1');
   const [cursorCoord, setCursorCoord] = useState(null);
   const [showDemo, setShowDemo] = useState(true);
+  const [aiNotes, setAiNotes] = useState([]);
+  const [aiError, setAiError] = useState(null);
+  const [aiModel, setAiModel] = useState(null);
 
   const points = DEMO_POLYLINE;
   const segments = useMemo(() => buildSegments(points), [points]);
   const totalLen = useMemo(() => totalLength(segments), [segments]);
 
-  const aiNotes = useMemo(
-    () => [
-      `도면 폴리라인에서 노드 ${points.length}개, 세그먼트 ${segments.length}개를 추출했습니다.`,
-      `총 연장 ${totalLen.toLocaleString()} mm — 엑셀 주배관 A(Ø150)와 매칭됩니다.`,
-      `엘보 위치 P3·P5가 BOM의 엘보 90° 수량(2)과 일치합니다.`,
-      selectedSegmentId
-        ? `선택 구간 ${selectedSegmentId}: ${
-            segments.find((s) => s.id === selectedSegmentId)?.length.toLocaleString() ?? '-'
-          } mm`
-        : '구간을 선택하면 상세 연장이 강조됩니다.',
-    ],
-    [points.length, segments, totalLen, selectedSegmentId]
-  );
-
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     setAnalyzing(true);
+    setAiError(null);
     setShowDemo(true);
-    window.setTimeout(() => {
-      setAnalyzing(false);
+
+    try {
+      const result = await analyzeWithAi({
+        points,
+        segments,
+        totalLength: totalLen,
+        excelRows: DEMO_EXCEL_ROWS,
+        selectedSegmentId,
+      });
+
+      setAiNotes(result.notes || []);
+      setAiModel(result.model || null);
       setAnalyzed(true);
       setTab('ai');
-      setSelectedSegmentId('S1');
-    }, 1100);
+    } catch (err) {
+      setAiError(err.message || 'AI 분석에 실패했습니다.');
+      setAnalyzed(false);
+      setTab('ai');
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   return (
@@ -61,7 +67,7 @@ function App() {
         </div>
         <div className="topbar-meta">
           <span className="pill">{showDemo ? 'DEMO DATA' : 'LIVE'}</span>
-          <span className="pill soft">DXF → 좌표 / 연장</span>
+          <span className="pill soft">{aiModel ? aiModel : 'OpenAI'}</span>
         </div>
       </header>
 
@@ -89,7 +95,7 @@ function App() {
                 <strong>엑셀</strong> — 품명·스펙·수량을 BOM 테이블로 정규화.
               </li>
               <li>
-                <strong>AI</strong> — 기하+BOM 대조, 누락·불일치·총연장 요약.
+                <strong>AI</strong> — OpenAI로 기하+BOM 대조 요약.
               </li>
             </ol>
           </div>
@@ -120,6 +126,7 @@ function App() {
             selectedSegmentId={selectedSegmentId}
             onSelectSegment={setSelectedSegmentId}
             aiNotes={aiNotes}
+            aiError={aiError}
             analyzed={analyzed}
           />
         </section>

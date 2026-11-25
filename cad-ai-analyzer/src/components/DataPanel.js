@@ -10,6 +10,7 @@ function DataPanel({
   selectedSegmentId,
   onSelectSegment,
   aiNotes,
+  aiError,
   analyzed,
 }) {
   return (
@@ -81,8 +82,9 @@ function DataPanel({
             <div className="guide-tip">
               <span className="guide-tip-label">TIP</span>
               <p>
-                실무에서는 DXF를 권장합니다. DWG는 서버에서 DXF로 변환한 뒤 파싱하는 구성이
-                안정적입니다.
+                AI 분석은 OpenAI API를 사용합니다. <code>.env</code>에{' '}
+                <code>OPENAI_API_KEY=sk-...</code>를 넣고 <code>yarn dev</code>로 API+프론트를 함께
+                실행하세요.
               </p>
             </div>
           </div>
@@ -183,10 +185,13 @@ function DataPanel({
 
         {tab === 'ai' && (
           <div className="ai-panel">
-            {!analyzed ? (
+            {aiError ? (
+              <p className="ai-error">{aiError}</p>
+            ) : !analyzed ? (
               <p className="ai-empty">
-                CAD와 엑셀을 올린 뒤 <strong>AI로 좌표·연장 추출</strong>을 누르면 도면 기하와 BOM을
-                맞춰 요약합니다.
+                CAD와 엑셀을 올린 뒤 <strong>AI로 좌표·연장 추출</strong>을 누르면 OpenAI가 도면
+                기하와 BOM을 맞춰 요약합니다. <code>.env</code>에{' '}
+                <code>OPENAI_API_KEY</code>가 필요합니다.
               </p>
             ) : (
               <ul className="ai-list">
